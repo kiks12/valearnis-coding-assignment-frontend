@@ -1,0 +1,18 @@
+{
+  "id": 35,
+  "userAnswers": [
+    {
+      "answer": [
+        {"index": 1, "text": "Dummy Choice 2"}
+      ],
+      "question": 23
+    },
+    {
+      "answer": [
+        {"index": 1, "text": "Dummy Choice 2"},
+        {"index": 2, "text": "Dummy Choice 3"}
+      ],
+      "question": 24
+    }
+  ]
+}
