@@ -1,10 +1,13 @@
 "use client";
 
-import NavBar, { ActivePage } from "@/components/navbar";
-import axios from "axios";
 import { useEffect, useState } from "react";
+
+import axios from "axios";
 import { QUIZ_BASE_API } from "@/endpoints";
+
 import { Question, QuestionType, Quiz, SubmittedAnswer } from "@/types";
+
+import NavBar, { ActivePage } from "@/components/navbar";
 import SingleAnswerQuestion from "@/components/singleAnswerQuestion";
 import MultiAnswerQuestion from "@/components/multiAnswerQuestion";
 

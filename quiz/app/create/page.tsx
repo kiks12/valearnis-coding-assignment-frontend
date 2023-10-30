@@ -1,11 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { ChangeEvent, useMemo, useState } from "react";
 
 import axios from "axios";
 
-import { Question, QuestionType, Quiz } from "@/types";
+import { Choice, Question, QuestionType, Quiz } from "@/types";
 import { CREATE_QUIZ_API } from "@/endpoints";
 
 import QuestionInput from "@/components/questionInput";
@@ -26,16 +26,16 @@ export default function Create() {
 		return quiz.questions.filter((question) => question.question_type == QuestionType.MA).length;
 	}, [quiz.questions]);
 
-	const onQuestionChange = (question: Question, index: number) => {
-		setQuiz((prev) => {
-			return {
-				...prev,
-				questions: prev.questions.map((eachQuestion, idx) => {
-					if (idx === index) return question;
-					return eachQuestion;
-				}),
-			};
-		});
+	const clearQuestions = () => {
+		const confirmResponse = confirm("Are you sure you want to clear the questions?");
+		if (confirmResponse) {
+			setQuiz((prev) => {
+				return {
+					...prev,
+					questions: [],
+				};
+			});
+		}
 	};
 
 	const addQuestion = () => {
@@ -56,6 +56,75 @@ export default function Create() {
 		});
 	};
 
+	const onTypeChange = (type: QuestionType, index: number) => {
+		setQuiz((prev) => {
+			return {
+				...prev,
+				questions: prev.questions.map((question, idx) => {
+					if (idx === index)
+						return {
+							...question,
+							question_type: type,
+						};
+
+					return question;
+				}),
+			};
+		});
+	};
+
+	const onQuestionChoicesChange = (choices: Choice[], index: number) => {
+		setQuiz((prev) => {
+			return {
+				...prev,
+				questions: prev.questions.map((question, idx) => {
+					if (idx === index) {
+						return {
+							...question,
+							choices: choices,
+						};
+					}
+
+					return question;
+				}),
+			};
+		});
+	};
+
+	const onQuestionTextChange = (event: ChangeEvent<HTMLTextAreaElement>, index: number) => {
+		setQuiz((prev) => {
+			return {
+				...prev,
+				questions: prev.questions.map((question, idx) => {
+					if (idx === index)
+						return {
+							...question,
+							text: event.target.value,
+						};
+
+					return question;
+				}),
+			};
+		});
+	};
+
+	const onQuestionDescriptionChange = (event: ChangeEvent<HTMLInputElement>, index: number) => {
+		setQuiz((prev) => {
+			return {
+				...prev,
+				questions: prev.questions.map((question, idx) => {
+					if (idx === index)
+						return {
+							...question,
+							description: event.target.value,
+						};
+
+					return question;
+				}),
+			};
+		});
+	};
+
 	const createQuiz = async () => {
 		if (quiz.questions.length === 0) {
 			alert("Please create questions first");
@@ -66,8 +135,6 @@ export default function Create() {
 		if (res.status === 200) {
 			alert("Successfully created new quiz");
 			router.push("/");
-		} else {
-			console.log(res.data);
 		}
 	};
 
@@ -124,11 +191,14 @@ export default function Create() {
 								<QuestionInput
 									index={idx}
 									key={idx}
+									question={question}
 									active={activeQuestion === idx}
 									setActive={() => setActiveQuestion(idx)}
 									onDelete={() => deleteQuestion(idx)}
-									question={question}
-									onChange={onQuestionChange}
+									onQuestionTypeChange={(type: QuestionType) => onTypeChange(type, idx)}
+									onQuestionTextChange={(e: ChangeEvent<HTMLTextAreaElement>) => onQuestionTextChange(e, idx)}
+									onQuestionDescriptionChange={(e: ChangeEvent<HTMLInputElement>) => onQuestionDescriptionChange(e, idx)}
+									onQuestionChoicesChange={(choices: Choice[]) => onQuestionChoicesChange(choices, idx)}
 								/>
 							);
 						})
@@ -151,7 +221,13 @@ export default function Create() {
 						<p>{multiAnswerQuestionsCount}</p>
 					</div>
 					<button
-						className="w-full py-2 px-5 mt-10 bg-slate-500 hover:bg-slate-600 text-white border border-slate-600 rounded-lg"
+						className="w-full py-2 px-5 mt-10 border border-slate-500 text-slate-500 hover:bg-slate-500 hover:text-white border border-slate-600 rounded-lg"
+						onClick={clearQuestions}
+					>
+						Clear Questions
+					</button>
+					<button
+						className="w-full py-2 px-5 mt-3 bg-slate-500 hover:bg-slate-600 text-white border border-slate-600 rounded-lg"
 						onClick={addQuestion}
 					>
 						+ Add Question

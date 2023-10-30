@@ -1,65 +1,31 @@
 import { Choice, Question, QuestionType } from "@/types";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent } from "react";
 import SingleAnswerChoices from "./singleAnswerChoices";
 import MultiAnswerChoices from "./multiAnswerChoices";
 
 interface props {
+	onQuestionTypeChange: (type: QuestionType) => void;
+	onQuestionTextChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
+	onQuestionDescriptionChange: (e: ChangeEvent<HTMLInputElement>) => void;
+	onQuestionChoicesChange: (choices: Choice[]) => void;
 	question: Question;
-	onChange: (question: Question, index: number) => void;
 	onDelete: () => void;
 	index: number;
 	active: boolean;
 	setActive: () => void;
 }
 
-const QuestionInput: React.FC<props> = ({ question, onChange, index, onDelete, active, setActive }) => {
-	const [questionData, setQuestionData] = useState<Question>(question);
-
-	useEffect(() => {
-		onChange(questionData, index);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [questionData]);
-
-	useEffect(() => {
-		setQuestionData(question);
-	}, [question]);
-
-	const onTypeChange = (type: QuestionType) => {
-		setQuestionData((prev) => {
-			return {
-				...prev,
-				question_type: type,
-			};
-		});
-	};
-
-	const onChoicesChange = (choices: Choice[]) => {
-		setQuestionData((prev) => {
-			return {
-				...prev,
-				choices: choices,
-			};
-		});
-	};
-
-	const onQuestionChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-		setQuestionData((prev) => {
-			return {
-				...prev,
-				text: event.target.value,
-			};
-		});
-	};
-
-	const onDescriptionChange = (event: ChangeEvent<HTMLInputElement>) => {
-		setQuestionData((prev) => {
-			return {
-				...prev,
-				description: event.target.value,
-			};
-		});
-	};
-
+const QuestionInput: React.FC<props> = ({
+	question,
+	index,
+	onDelete,
+	active,
+	setActive,
+	onQuestionTypeChange: onTypeChange,
+	onQuestionTextChange,
+	onQuestionDescriptionChange,
+	onQuestionChoicesChange,
+}) => {
 	return (
 		<div className={active ? "mt-10 mb-20 p-5 rounded-lg shadow border" : "mt-10 mb-20 p-5"} onClick={setActive}>
 			<div className="">
@@ -70,14 +36,14 @@ const QuestionInput: React.FC<props> = ({ question, onChange, index, onDelete, a
 				</div>
 				<div>
 					<label htmlFor={`question${index}`}>Question: </label>
-					<textarea onChange={onQuestionChange} value={questionData.text} id={`question${index}`} className="w-full p-1 border rounded" />
+					<textarea onChange={onQuestionTextChange} value={question.text} id={`question${index}`} className="w-full p-1 border rounded" />
 				</div>
 				<div className="flex flex-col mt-3">
 					<label htmlFor={`description${index}`}>Description: (Optional)</label>
 					<input
-						value={questionData.description}
+						value={question.description}
 						id={`description${index}`}
-						onChange={onDescriptionChange}
+						onChange={onQuestionDescriptionChange}
 						type="text"
 						className="p-3 w-full border"
 					/>
@@ -91,10 +57,10 @@ const QuestionInput: React.FC<props> = ({ question, onChange, index, onDelete, a
 				</div>
 				<div className="mt-3">
 					<p>Choices: </p>
-					{questionData.question_type == QuestionType.SA ? (
-						<SingleAnswerChoices questionIndex={index} choices={questionData.choices} onChange={onChoicesChange} />
+					{question.question_type == QuestionType.SA ? (
+						<SingleAnswerChoices questionIndex={index} choices={question.choices} onChange={onQuestionChoicesChange} />
 					) : (
-						<MultiAnswerChoices questionIndex={index} choices={questionData.choices} onChange={onChoicesChange} />
+						<MultiAnswerChoices questionIndex={index} choices={question.choices} onChange={onQuestionChoicesChange} />
 					)}
 				</div>
 			</div>

@@ -1,13 +1,15 @@
 "use client";
 
-import axios, { AxiosError } from "axios";
 import { useState, useEffect } from "react";
-
-import { Quiz } from "../types";
 import { useRouter } from "next/navigation";
+
+import axios, { AxiosError } from "axios";
+
+import { GET_QUIZZES_API, QUIZ_BASE_API } from "@/endpoints";
+import { Quiz } from "../types";
+
 import NavBar, { ActivePage } from "@/components/navbar";
 import QuizCard from "@/components/quizCard";
-import { GET_QUIZZES_API, QUIZ_BASE_API } from "@/endpoints";
 
 export default function Home() {
 	const [quizzes, setQuizzes] = useState<Quiz[]>([]);

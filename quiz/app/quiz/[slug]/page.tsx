@@ -1,13 +1,16 @@
 "use client";
 
-import MultiAnswerQuestion from "@/components/multiAnswerQuestion";
-import NavBar, { ActivePage } from "@/components/navbar";
-import SingleAnswerQuestion from "@/components/singleAnswerQuestion";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+
+import axios from "axios";
+
 import { QUIZ_BASE_API, SUBMIT_ANSWERS_API } from "@/endpoints";
 import { Answer, Answers, Question, QuestionType, Quiz } from "@/types";
-import axios from "axios";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+
+import NavBar, { ActivePage } from "@/components/navbar";
+import MultiAnswerQuestion from "@/components/multiAnswerQuestion";
+import SingleAnswerQuestion from "@/components/singleAnswerQuestion";
 
 interface params {
 	params: {
@@ -82,7 +85,10 @@ export default function QuizPage({ params }: params) {
 		<>
 			<NavBar active={ActivePage.NONE} />
 			{modal.show && (
-				<section className="absolute z-50 w-screen h-screen p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full flex flex-col justify-center align-center">
+				<section
+					style={{ backgroundColor: "rgba(100,100,100,0.5)" }}
+					className="fixed z-50 w-screen h-screen p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full flex flex-col justify-center align-center"
+				>
 					<div className="w-full max-w-2xl max-h-full flex mx-auto flex-col justify-center align-center">
 						<div className="rounded-lg border shadow bg-white">
 							<div className="p-6 space-y-6">
