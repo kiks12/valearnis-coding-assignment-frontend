@@ -60,26 +60,33 @@ const SingleAnswerQuestion: React.FC<props> = ({ question, number, onAnswer, sco
 									key={idx}
 									className={
 										score && answers.some((answer) => answer.index === choice.index && answer.isCorrect)
-											? "p-2 my-2 border rounded bg-green-100 border border-green-200"
+											? "p-2 my-2 border flex justify-between rounded bg-green-100 border border-green-200"
 											: answers.some((answer) => answer.index === choice.index && !answer.isCorrect)
-											? "p-2 my-2 border rounded bg-rose-100 border border-rose-100"
-											: "p-2 my-2 border rounded"
+											? "p-2 my-2 border flex justify-between rounded bg-rose-100 border border-rose-100"
+											: "p-2 my-2 border flex justify-between rounded"
 									}
 								>
-									<input
-										disabled={score}
-										checked={
-											score
-												? answers.some((answer) => answer.index === choice.index) || choice.is_answer
-												: answer.answer.some((answer) => answer.index == choice.index)
-										}
-										className="mr-5"
-										type="radio"
-										name={`answer${question.id}`}
-										id={`answer${question.id}${idx}`}
-										onChange={() => onChoiceClick(choice)}
-									/>
-									<label htmlFor={`answer${question.id}${idx}`}>{choice.text}</label>
+									<div>
+										<input
+											disabled={score}
+											checked={
+												score
+													? answers.some((answer) => answer.index === choice.index) || choice.is_answer
+													: answer.answer.some((answer) => answer.index == choice.index)
+											}
+											className="mr-5"
+											type="radio"
+											name={`answer${question.id}`}
+											id={`answer${question.id}${idx}`}
+											onChange={() => onChoiceClick(choice)}
+										/>
+										<label htmlFor={`answer${question.id}${idx}`}>{choice.text}</label>
+									</div>
+									{score && choice.is_answer && (
+										<small className="text-sky-900">
+											<i>Correct Answer</i>
+										</small>
+									)}
 								</div>
 							);
 						})}
