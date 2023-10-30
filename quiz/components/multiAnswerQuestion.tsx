@@ -90,7 +90,9 @@ const MultiAnswerQuestion: React.FC<props> = ({ question, number, onAnswer, scor
 									<input
 										disabled={score}
 										checked={
-											score ? answers.some((answer) => answer.index === choice.index) : answer.answer.some((answer) => answer.index == choice.index)
+											score
+												? answers.some((answer) => answer.index === choice.index) || choice.is_answer
+												: answer.answer.some((answer) => answer.index == choice.index)
 										}
 										className="p-4 mr-5"
 										type="checkbox"

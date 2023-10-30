@@ -1,5 +1,5 @@
 import { Answer, Choice, Question } from "@/types";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 interface props {
 	number: number;
@@ -69,7 +69,9 @@ const SingleAnswerQuestion: React.FC<props> = ({ question, number, onAnswer, sco
 									<input
 										disabled={score}
 										checked={
-											score ? answers.some((answer) => answer.index === choice.index) : answer.answer.some((answer) => answer.index == choice.index)
+											score
+												? answers.some((answer) => answer.index === choice.index) || choice.is_answer
+												: answer.answer.some((answer) => answer.index == choice.index)
 										}
 										className="mr-5"
 										type="radio"
