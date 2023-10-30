@@ -8,15 +8,21 @@ interface props {
 	onChange: (question: Question, index: number) => void;
 	onDelete: () => void;
 	index: number;
+	active: boolean;
+	setActive: () => void;
 }
 
-const QuestionInput: React.FC<props> = ({ question, onChange, index, onDelete }) => {
+const QuestionInput: React.FC<props> = ({ question, onChange, index, onDelete, active, setActive }) => {
 	const [questionData, setQuestionData] = useState<Question>(question);
 
 	useEffect(() => {
 		onChange(questionData, index);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [questionData]);
+
+	useEffect(() => {
+		setQuestionData(question);
+	}, [question]);
 
 	const onTypeChange = (type: QuestionType) => {
 		setQuestionData((prev) => {
@@ -55,7 +61,7 @@ const QuestionInput: React.FC<props> = ({ question, onChange, index, onDelete })
 	};
 
 	return (
-		<div className="mt-10 mb-20">
+		<div className={active ? "mt-10 mb-20 p-5 rounded-lg shadow border" : "mt-10 mb-20 p-5"} onClick={setActive}>
 			<div className="">
 				<div className="flex flex-row-reverse">
 					<button className="text-rose-800 py-1 px-5 border rounded-lg border-rose-800 hover:bg-rose-800 hover:text-white" onClick={onDelete}>
@@ -64,15 +70,15 @@ const QuestionInput: React.FC<props> = ({ question, onChange, index, onDelete })
 				</div>
 				<div>
 					<label htmlFor={`question${index}`}>Question: </label>
-					<textarea onChange={onQuestionChange} value={questionData.text} className="w-full p-1 border rounded" />
+					<textarea onChange={onQuestionChange} value={questionData.text} id={`question${index}`} className="w-full p-1 border rounded" />
 				</div>
 				<div className="flex flex-col mt-3">
 					<label htmlFor={`description${index}`}>Description: (Optional)</label>
 					<input
 						value={questionData.description}
+						id={`description${index}`}
 						onChange={onDescriptionChange}
 						type="text"
-						// id={`description${index}`}
 						className="p-3 w-full border"
 					/>
 				</div>

@@ -1,17 +1,21 @@
 "use client";
 
-import NavBar, { ActivePage } from "@/components/navbar";
-import QuestionInput from "@/components/questionInput";
-import { CREATE_QUIZ_API } from "@/endpoints";
-import { Question, QuestionType, Quiz } from "@/types";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
+import axios from "axios";
+
+import { Question, QuestionType, Quiz } from "@/types";
+import { CREATE_QUIZ_API } from "@/endpoints";
+
+import QuestionInput from "@/components/questionInput";
+import NavBar, { ActivePage } from "@/components/navbar";
+
 export default function Create() {
 	const router = useRouter();
+	const [activeQuestion, setActiveQuestion] = useState(0);
 	const [quiz, setQuiz] = useState<Quiz>({
-		title: "Quiz Title",
+		title: "",
 		description: "",
 		questions: [],
 	});
@@ -67,10 +71,6 @@ export default function Create() {
 		}
 	};
 
-	useEffect(() => {
-		console.log(quiz.questions);
-	}, [quiz]);
-
 	return (
 		<>
 			<NavBar active={ActivePage.CREATE} />
@@ -86,6 +86,7 @@ export default function Create() {
 							id="title"
 							type="text"
 							value={quiz.title}
+							placeholder="Enter quiz title"
 							onChange={(e) =>
 								setQuiz((prev) => {
 									return {
@@ -94,14 +95,14 @@ export default function Create() {
 									};
 								})
 							}
-							className="border rounded w-full px-1 p-3 text-3xl font-semibold"
+							className="border rounded w-full p-3"
 						/>
 					</div>
-					<div className="mt-4">
+					<div className="mt-5">
 						<label htmlFor="description">Description</label>
-						<input
-							type="text"
+						<textarea
 							className="rounded w-full border p-3"
+							rows={15}
 							value={quiz.description}
 							onChange={(e) =>
 								setQuiz((prev) => {
@@ -115,12 +116,25 @@ export default function Create() {
 					</div>
 				</div>
 
-				<div className="lg:col-span-2 md:col-span-2 p-7">
+				<div className="lg:col-span-2 md:col-span-2 p-3">
 					<h2 className="text-2xl font-semibold">Questions</h2>
-					{quiz.questions.length !== 0 &&
+					{quiz.questions.length !== 0 ? (
 						quiz.questions.map((question: Question, idx) => {
-							return <QuestionInput onDelete={() => deleteQuestion(idx)} index={idx} key={idx} question={question} onChange={onQuestionChange} />;
-						})}
+							return (
+								<QuestionInput
+									index={idx}
+									key={idx}
+									active={activeQuestion === idx}
+									setActive={() => setActiveQuestion(idx)}
+									onDelete={() => deleteQuestion(idx)}
+									question={question}
+									onChange={onQuestionChange}
+								/>
+							);
+						})
+					) : (
+						<div></div>
+					)}
 				</div>
 
 				<div className="p-7 sticky top-[4.5em] border-l md:borderl-1 md:h-[91vh] lg:col-span-1 md:col-span-2 self-start">

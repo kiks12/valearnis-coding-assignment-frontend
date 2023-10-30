@@ -86,7 +86,7 @@ const SingleAnswerChoices: React.FC<props> = ({ choices, questionIndex, onChange
 						</div>
 					);
 				})}
-			<button className="w-full border p-3 rounded-lg hover:bg-slate-100" onClick={addChoice}>
+			<button className="w-full border p-3 rounded-lg hover:bg-slate-100 bg-white" onClick={addChoice}>
 				+ Add Choice
 			</button>
 		</div>
